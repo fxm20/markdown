@@ -1,1 +1,2 @@
-自学
+# xuexi
+ 自学python
