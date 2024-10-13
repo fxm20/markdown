@@ -1450,5 +1450,44 @@ conf = SparkConf().setMaster("local[*]").setAppName("test_Spark_app")
 
 pyspark计算都是基于rdd对象来进行的
 
-![image-20241013104458989](./Pictures/image-20241013104458989.png)
+![](./Pictures/image-20241013104458989.png)
 
+## #map算子
+
+对逐个进行算
+
+```
+#导包
+from pyspark import SparkConf,SparkContext
+#创建环境
+import os
+os.environ["PYSPARK_PYTHON"]="C:/Users/w2071/AppData/Local/Programs/Python/Python310/python.exe"
+connf=SparkConf().setMaster("local[*]").setAppName("test_spark")
+sc=SparkContext(conf=connf)
+#准备一个rdd
+rdd =sc.parallelize([1,2,3,4,5,6,7,8,9])
+#通过map方法将全部数据都乘以10
+def func(data):
+
+    return data* 10
+rdd2=rdd.map(func)
+print(rdd2.collect())
+```
+
+map算子(成员方法)
+
+接受一个处理函数,可以用lambda表达式快速编写
+
+对于rdd内元素逐个处理,并返回一个新的rdd
+
+2.链式调用
+
+对于返回值是新的rdd的算子,可以通过链式调用的方式多次调用算子
+
+#### flatmap算子
+
+功能:对rdd执行map操作,然后进行 解除嵌套操作
+
+![image-20241013131022838](./Pictures/image-20241013131022838.png)
+
+啊
