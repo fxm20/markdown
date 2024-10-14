@@ -1490,4 +1490,53 @@ map算子(成员方法)
 
 ![image-20241013131022838](./Pictures/image-20241013131022838.png)
 
-啊
+#### reduceByKey
+
+功能:针对kv型,rdd,自动按照key分组,然后根据你提供的聚合逻辑,完成组内数据的聚合操作
+
+![image-20241013135214746](./Pictures/image-20241013135214746.png)
+
+```python
+from pyspark import SparkConf,SparkContext
+import os
+os.environ["PYSPARK_PYTHON"]="C:/Users/w2071/AppData/Local/Programs/Python/Python310/python.exe"
+connf=SparkConf().setMaster("local[*]").setAppName("test_spark")
+sc=SparkContext(conf=connf)
+# 准备一个rdd
+rdd=sc.textFile("D:/hello.txt")
+#取出单词
+word_rdd=rdd.flatMap(lambda x:x.split(" "))
+# 'itheima', 'itheima', 'itcast', 'itheima', 'spark',
+# 将所有单词都转换为二元元祖
+word_with_one_rdd=word_rdd.map(lambda x:(x,1))
+# 对他们进行相加
+result_rdd=word_with_one_rdd.reduceByKey(lambda x,y:x+y)
+print(result_rdd.collect())
+sc.stop()
+```
+
+#### Filter
+
+功能:过滤想要的数据进行保留
+
+```
+语法:
+# func:(T)->bool 传入一个参数类型,返回值必须是True orFalse
+```
+
+#### distinct
+
+功能:对rdd数据进行去重,返回新rdd
+
+```
+语法:
+rdd.distinct()无需传参
+```
+
+#### sortBy算子
+
+功能:对rdd数据进行排序,基于你指定的排序依据
+
+
+
+![image-20241013151121049](./Pictures/image-20241013151121049.png)
