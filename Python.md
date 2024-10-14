@@ -1540,3 +1540,19 @@ rdd.distinct()无需传参
 
 
 ![image-20241013151121049](./Pictures/image-20241013151121049.png)
+
+#### 数据输出
+
+![image-20241014173806073](./Pictures/image-20241014173806073.png)
+
+#### collect算子
+
+功能:将rdd各个分区内等等数据,统一收集到Driver中,形成一个List对象
+
+用法
+
+```
+rdd.collect()
+返回值是一个list
+```
+
