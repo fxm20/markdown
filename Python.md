@@ -917,7 +917,7 @@ import 模块名1,模块名2
 ```
 if __name__ == '__main__':
 	执行语句
-	
+	快解决输入main
 ```
 
 “__  all __”变量
@@ -1555,4 +1555,242 @@ rdd.distinct()无需传参
 rdd.collect()
 返回值是一个list
 ```
+
+#### reduce算子
+
+功能:对RDD数据集按照你传入的逻辑进行聚合
+
+语法
+
+```
+rdd.reduce(func)
+#func:(T,T)
+#2参数传入一个返回值,返回值和参数要求类型一致
+```
+
+#### take算子
+
+功能:取RDD的前N个元素,组成list返回给你
+
+```
+sc.parallelize([3,2,1,4,5,6]).take(5)
+[3,2,1,4,5]
+```
+
+#### count算子
+
+功能:计算RDD有多少条数据,返回值是一个数字
+
+![image-20241014180649660](./Pictures/image-20241014180649660.png)
+
+#### saveAsTextFile算子
+
+```
+os.environ["HADOOP_HOME"]="C:/Program Files (x86)/hadoop"
+```
+
+功能:将RDD的数据写入到文件中
+
+支持本地写出,hdfs等文件系统
+
+#### 修改rdd分区为1个
+
+方法一SparkConf对象设置为属性全局并行度为1
+
+spark.default.parallelism   1
+
+```
+conf=SparkConf().setMaster("local[*]").setAppName("test_spark")
+conf.set("spark.default.parallelism","1")
+sc=sparkcontext(conf=conf)
+```
+
+方法二:在创建RDD的时候设置(parallelize方法传入numSlices参数为1)
+
+```
+rdd = sc.parallelize([1, 2, 3, 4, 5, 6, 7, 8, 9],numSlices=1)
+```
+
+#### 闭包(有内存泄漏风险)
+
+![image-20241015092448588](./Pictures/image-20241015092448588.png)
+
+```
+nonlocal在闭包函数(内部函数中)想要修改外部函数的变量值
+需要用nonlocal声明这个外部变量
+```
+
+![image-20241015100215338](./Pictures/image-20241015100215338.png)
+
+#### 装饰器
+
+
+
+![image-20241015101752259](./Pictures/image-20241015101752259.png)
+
+#### 设计模式
+
+工厂模式
+
+![image-20241015103052925](./Pictures/image-20241015103052925.png)
+
+![image-20241015103411798](./Pictures/image-20241015103411798.png)
+
+#### 多线程并行执行概念
+
+处理器同一时刻只能执行一条指令, 但多个处理器可以同时执行多个指令
+
+#### 多线程编程
+
+threading模块
+
+![image-20241015104404294](./Pictures/image-20241015104404294.png)
+
+#### 网络编程
+
+#### socket服务端编程
+
+1.创建sockert对象
+
+```
+import socket
+socket_server = socket.socket()
+```
+
+2.绑定socket_server到指定ip和地址
+
+```
+socket_server.bind(host,port)
+```
+
+3.服务端开始监听端口
+
+```
+socker_server.listen(backlog)
+#backlog为int整数,表示允许的连接数量,超出会等待,可以不填,不填会自动设置一个合理值
+```
+
+4.接受客户端连接,获得连接对象
+
+```
+conn,address=socket_server.accept()
+print(f"接收到客户端连接,链接来自:{address}")
+#accept方法是阻塞方法,如果没有连接,回卡在当前这一行不向下执行代码
+#accept返回值是一个二元元祖,可以使用上述形式,用两个变量接收二元元祖的两个元素
+```
+
+5.客户端链接后,通过recv方法,接受客服端发送的消息
+
+```
+while True:
+	data=conn.recv(1024).decode("UTF-8")
+	#recv方法的返回值是字节数组(Bytes),可以通过decode使用UTF-8解码字符串
+	#recv方法的传参是buffsize,缓冲区,一般设置为1024即可
+	if data=="exit"
+		break
+	print("接收到发送来到数据是",data)	
+```
+
+6.通过conn(客户端档次链接对象),调用send方法可以回复消息
+
+```
+while True:
+	data=conn.recv(1024).decode("UTF-8")
+	if data =="exit"
+		break
+	print("接收到发送来到数据是",data)	
+    coon.send("你好呀哈哈哈".encode("UTF-8"))
+```
+
+7.coon(客户端当次连接对象)和socket_server对象调用close方法,关闭链接
+
+#### 客户端开发
+
+1.创建socket对象
+
+```
+import socket
+socket_client=socket.socket()
+```
+
+2.连接到服务端
+
+```
+socket_client.connf(("localhost",8888))
+```
+
+3.发送消息
+
+```
+while True:
+	send_msg=input("请输入你发送的消息")
+	if send_masg=="exit"
+		break
+	socket_client.send(send_masg.encode("UTF-8"))	
+```
+
+#### 正则表达式
+
+使用re模块中的三个基础方法来做正则表达式: math,search,findall
+
+##### re.match(匹配规则,被匹配字符串)   #开头匹配
+
+从被匹配字符串开头进行匹配,匹配成功返回匹配对象(包括匹配的信息),匹配不成功返回空
+
+```
+s="python itheima python itheima python itheima"
+result =re.match("python",s)
+print(result)	#输出<re.Match object;span=(0,6),match="python">
+print(result.span())	#(0,6)
+print(result.group())	*python
+```
+
+##### search(匹配规则,被匹配字符串)	#搜索整个字符串,找出被匹配的,从前向后,找到一个就停止,不会继续向后
+
+```
+s="1python itheima python itheima python itheima"
+result =re.search("python",s)
+print(result)	#<re.Match object; span=(1, 7), match='python'>
+print(result.span())	#(1, 7)
+print(result.group())	*python
+```
+
+##### findall(匹配规则,匹配字符串)	#匹配整个字符串,找出全部匹配项
+
+```
+import re
+s="1python itheima python itheima python itheima"
+result_all=re.findall("python",s)
+print(result_all)	#['python', 'python', 'python']
+```
+
+![image-20241015174855102](./Pictures/image-20241015174855102.png)
+
+#### 正则表达式-元字符匹配
+
+字符串的r标记,表示当前字符串是原始字符串,既内部的转移字符串无效而是普通字符
+
+| 字符 |                   功能                   |
+| :--: | :--------------------------------------: |
+|  .   | 匹配任意1个字符(除了\n), \  . 匹配点本身 |
+|  []  |  匹配[]中列举的字符(可以写a-z A-Z 0-9)   |
+|  \d  |              匹配数字,既0-9              |
+|  \D  |                匹配非数字                |
+|  \s  |          匹配空白,既空格,tab键           |
+|  \S  |                匹配非空白                |
+|  \w  |       匹配单词字符,既a-z,A-Z,0-9,_       |
+|  \W  |              匹配非单词字符              |
+
+![image-20241015175417772](./Pictures/image-20241015175417772.png)
+
+数量匹配:
+
+| 字符  | 功能                              |
+| :---: | --------------------------------- |
+|   *   | 匹配前一个规则的字符出现0至无数次 |
+|   +   | 匹配前一个规则的字符出现1至无数次 |
+|   ?   | 匹配前一个规则的字符出现0次或1次  |
+|  {m}  | 匹配前一个规则的字符出现m次       |
+| {m,}  | 匹配前一个规则的字符出现最少m次   |
+| {m,n} | 匹配前一个规则的字符出现m到n次    |
 
